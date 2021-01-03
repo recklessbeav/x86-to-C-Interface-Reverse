@@ -4,12 +4,12 @@ extern _printf, _scanf, _getchar, _gets, _system
 
 section .data
 msg1 db "Invalid Input", 13,10,0
-msg2 db "Hello again \n",0
+msg2 db "Invalid Terminator, please try again", 13,10, 0
 
 prompt1 db "Enter a string: ", 0
 prompt2 db "Palindrome: %s", 13,10,0
-prompt3 db "Please enter an integer: ",0 
-prompt4 db "Character: %s", 13,10,0
+prompt4 db "Character: %c", 13,10,0
+prompt5 db "Do you want to try again (y/n)? %s", 13,10,0
 
 string times 21 db 0
 reverse times 21 db 0
@@ -39,29 +39,50 @@ _main:
     mov edx, -1
     
     LOOP1:
-        cmp byte [eax], 0
+        cmp byte [eax], 0x21
         je LOOP2
+        cmp byte [eax], 0
+        je INVALIDTERM
+        cmp byte [eax], 0x2E
+        je REMAIN
         inc eax
         inc ebx
         jmp LOOP1
         
+    REMAIN:
+        ;printf ("Palindrome: same string \n")
+        push string 
+        push prompt2
+        call _printf
+        add esp, 8
+        jmp END
+        
     LOOP2:
         cmp ebx, 0
-        je LOOP4
+        je INVALID
         
-    LOOP3:
+    LREVERSE:
+        ;reverse
         mov dl, [string + ebx -1]
         mov [ecx], dl
         inc ecx
         dec ebx
-        jnz LOOP3
+        jnz LREVERSE
         jmp LOOP5
         
-    LOOP4:
+    INVALID:
+        ;invalid
         push msg1
         call _printf
         add esp, 4
         JMP END
+        
+    INVALIDTERM:
+        ;invalid terminator
+        push msg2
+        call _printf
+        add esp, 4
+        JMP _main
         
     LOOP5:
         ;printf ("Palindrome %s \n")
@@ -82,24 +103,6 @@ _main:
     CHK:
         mov dword [reverse + edx], 0
     
-    ;STR_MTY:
-     ;   mov eax, reverse
-      ;  mov ecx, -1
-       ; cmp byte [eax], 0
-        ;je LOOP4
-        ;jmp VALID
-        
-    ;VALID:
-     ;   inc ecx 
-      ;  mov ebx, [eax + ecx]
-       ; cmp ebx, 0
-       ; jne VALID
-        
-       ; mov dword [length], ecx
-       ; push length
-       ; push prompt4
-       ; call _printf
-        ;add esp, 8
   
     END:
     xor eax, eax
