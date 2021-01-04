@@ -8,12 +8,12 @@ msg2 db "Invalid Terminator, please try again", 13,10, 0
 
 prompt1 db "Enter a string: ", 0
 prompt2 db "Palindrome: %s", 13,10,0
+prompt3 db "Word: %d", 13,10,0
 prompt4 db "Character: %d", 13,10,0
 prompt5 db "Do you want to try again (y/n)? %s", 13,10,0
 
 string times 21 db 0
 reverse times 21 db 0
-length times 21 db 0
 
 
 section .text
@@ -44,6 +44,7 @@ _main:
         je INVALIDTERM
         cmp byte [eax], 0x2E
         je REMAIN
+        ;cmp byte [eax], 0x20
         inc esi
         inc eax
         inc ebx
@@ -104,6 +105,7 @@ _main:
         mov dword [reverse + edx], 0
     
     CHRTR:
+        ;character count
         push esi
         push prompt4
         call _printf
