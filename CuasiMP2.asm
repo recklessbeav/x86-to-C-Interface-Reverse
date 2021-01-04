@@ -145,12 +145,6 @@ _main:
         call _printf
         add esp, 8
     
-     
-        
-      
-      
-    
-    
   
     END:
     xor eax, eax
