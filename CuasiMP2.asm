@@ -16,7 +16,7 @@ prompt6 db "gumagana sis", 13,10,0
 
 clr db "cls", 0
 string times 21 db 0
-string2 times 21 db 0
+period times 21 db 0
 reverse times 21 db 0
 answer db 0
 
@@ -41,7 +41,8 @@ _main:
     
     lea eax, [string]
     lea ecx, [reverse]
-    lea ebp, [string2]
+    lea ebp, [period]
+   
     mov esi, 0
     mov edi, 1 
     mov ebx, 0
@@ -59,14 +60,14 @@ _main:
         je REMAIN
         cmp byte [eax], 0x20 ; space
         je WORDCOUNT
-        inc esi ;character
+        inc esi ; character
         cmp esi, 21
         jge MAXINPUT
-        mov dx, [eax]
-        mov [ebp], dx
+       ; mov dx, [eax]
+       ; mov [ebp], dx
         inc eax
         inc ebx
-        inc ebp
+        ;inc ebp
         jmp LOOP1
     
     WORDCOUNT:
@@ -74,11 +75,13 @@ _main:
         inc esi
         inc eax
         inc ebx
+        inc ebp
         jmp LOOP1
         
     REMAIN:
         ;printf ("Palindrome: same string \n")
-        push string 
+        inc esi
+        push period 
         push prompt2
         call _printf
         add esp, 8
@@ -102,21 +105,21 @@ _main:
         push msg1
         call _printf
         add esp, 4
-        jmp END
+        jmp TRY
         
     INVALIDTERM:
         ;invalid terminator
         push msg2
         call _printf
         add esp, 4
-        jmp END
+        jmp TRY
         
     MAXINPUT:
         ;string greater than 20
         push msg3
         call _printf
         add esp, 4
-        jmp END
+        jmp TRY
         
     LOOP5:
         ;printf ("Palindrome %s \n")
