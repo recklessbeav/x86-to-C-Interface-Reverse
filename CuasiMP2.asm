@@ -12,7 +12,7 @@ prompt2 db "Palindrome: %s", 13,10,0
 prompt3 db "Word: %d", 13,10,0
 prompt4 db "Character: %d", 13,10,0
 prompt5 db "Do you want to try again (y/n)?", 13,10,0
-prompt6 db "gumagana sis", 13,10,0
+
 
 clr db "cls", 0
 string times 21 db 0
@@ -28,11 +28,18 @@ _main:
     push clr
     call _system
     add esp, 4
+    
+    sub eax, eax
+    sub ecx, ecx
+    sub ebp, ebp
+    
+    
 
 ;printf ("Enter a string: \n")
     push prompt1
     call _printf
     add esp, 4
+    
     
 ;gets(string)
     push string
@@ -56,18 +63,18 @@ _main:
         je LOOP2
         cmp byte [eax], 0 ; null
         je INVALIDTERM
-        cmp byte [eax], 0x2E ; period
+        cmp byte [eax + 1], 0x2E ; period
         je REMAIN
         cmp byte [eax], 0x20 ; space
         je WORDCOUNT
         inc esi ; character
         cmp esi, 21
         jge MAXINPUT
-       ; mov dx, [eax]
-       ; mov [ebp], dx
+        mov dx, [eax]
+        mov [ebp], dx
         inc eax
         inc ebx
-        ;inc ebp
+        inc ebp
         jmp LOOP1
     
     WORDCOUNT:
