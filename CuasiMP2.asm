@@ -5,6 +5,7 @@ extern _printf, _scanf, _getchar, _gets, _system
 section .data
 msg1 db "Invalid Input", 13,10,0
 msg2 db "Invalid Terminator, please try again", 13,10, 0
+msg3 db "Max input", 13,10,0
 
 prompt1 db "Enter a string: ", 0
 prompt2 db "Palindrome: %s", 13,10,0
@@ -12,14 +13,19 @@ prompt3 db "Word: %d", 13,10,0
 prompt4 db "Character: %d", 13,10,0
 prompt5 db "Do you want to try again (y/n)? %s", 13,10,0
 
+clr db "cls", 0
 string times 21 db 0
 reverse times 21 db 0
+answer db 0
 
 
 section .text
 
 _main:
-    mov ebp, esp; for correct debugging
+;clear screen
+    ;push clr
+    ;call _system
+    ;add esp, 4
 
 ;printf ("Enter a string: \n")
     push prompt1
@@ -33,9 +39,13 @@ _main:
     
     lea eax, [string]
     lea ecx, [reverse]
-    mov esi, 0 
+    mov esi, 0
+    mov edi, 1 
     mov ebx, 0
     mov edx, -1
+    
+    cmp byte [eax], 0
+    je INVALID
     
     LOOP1:
         cmp byte [eax], 0x21
@@ -44,7 +54,17 @@ _main:
         je INVALIDTERM
         cmp byte [eax], 0x2E
         je REMAIN
-        ;cmp byte [eax], 0x20
+        cmp byte [eax], 0x20
+        je WORDCOUNT
+        inc esi
+        cmp esi, 21
+        jge MAXINPUT
+        inc eax
+        inc ebx
+        jmp LOOP1
+    
+    WORDCOUNT:
+        inc edi
         inc esi
         inc eax
         inc ebx
@@ -56,7 +76,7 @@ _main:
         push prompt2
         call _printf
         add esp, 8
-        jmp CHRTR
+        jmp WORDPRINT
         
     LOOP2:
         cmp ebx, 0
@@ -76,14 +96,21 @@ _main:
         push msg1
         call _printf
         add esp, 4
-        JMP END
+        jmp END
         
     INVALIDTERM:
         ;invalid terminator
         push msg2
         call _printf
         add esp, 4
-        JMP _main
+        jmp END
+        
+    MAXINPUT:
+        ;string greater than 20
+        push msg3
+        call _printf
+        add esp, 4
+        jmp END
         
     LOOP5:
         ;printf ("Palindrome %s \n")
@@ -104,13 +131,24 @@ _main:
     CHK:
         mov dword [reverse + edx], 0
     
+    WORDPRINT:
+        ;push wordcount
+        push edi
+        push prompt3
+        call _printf
+        add esp, 8
+    
     CHRTR:
         ;character count
         push esi
         push prompt4
         call _printf
         add esp, 8
+    
+     
         
+      
+      
     
     
   
