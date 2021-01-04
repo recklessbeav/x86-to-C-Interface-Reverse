@@ -11,7 +11,8 @@ prompt1 db "Enter a string: ", 0
 prompt2 db "Palindrome: %s", 13,10,0
 prompt3 db "Word: %d", 13,10,0
 prompt4 db "Character: %d", 13,10,0
-prompt5 db "Do you want to try again (y/n)? %s", 13,10,0
+prompt5 db "Do you want to try again (y/n)?", 13,10,0
+prompt6 db "gumagana sis", 13,10,0
 
 clr db "cls", 0
 string times 21 db 0
@@ -23,9 +24,9 @@ section .text
 
 _main:
 ;clear screen
-    ;push clr
-    ;call _system
-    ;add esp, 4
+    push clr
+    call _system
+    add esp, 4
 
 ;printf ("Enter a string: \n")
     push prompt1
@@ -144,6 +145,31 @@ _main:
         push prompt4
         call _printf
         add esp, 8
+    
+    TRY:
+       ;ask to try again
+       ;printf ("Do you want to try again (y/n)?\n")
+       push prompt5
+       call _printf
+       add esp, 4
+    
+       ;gets(answer)
+       push answer
+       call _gets
+       add esp, 4
+       
+       lea eax, [answer]
+       
+       cmp byte [eax], "y"
+       JE _main
+       cmp byte [eax], "Y"
+       JE _main
+       cmp byte [eax], "n"
+       JE END
+       cmp byte [eax], "N"
+       JE END
+       cmp byte [eax], 0
+       JE TRY
     
   
     END:
