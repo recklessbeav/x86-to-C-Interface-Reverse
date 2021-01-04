@@ -4,7 +4,7 @@ extern _printf, _scanf, _getchar, _gets, _system
 
 section .data
 msg1 db "Invalid Input", 13,10,0
-msg2 db "Invalid Terminator, please try again", 13,10, 0
+msg2 db "Invalid Terminator", 13,10, 0
 msg3 db "Max input", 13,10,0
 
 prompt1 db "Enter a string: ", 0
@@ -12,10 +12,10 @@ prompt2 db "Palindrome: %s", 13,10,0
 prompt3 db "Word: %d", 13,10,0
 prompt4 db "Character: %d", 13,10,0
 prompt5 db "Do you want to try again (y/n)?", 13,10,0
-prompt6 db "gumagana sis", 13,10,0
 
 clr db "cls", 0
 string times 21 db 0
+string2 db 0
 reverse times 21 db 0
 answer db 0
 
@@ -23,6 +23,7 @@ answer db 0
 section .text
 
 _main:
+   
 ;clear screen
     push clr
     call _system
@@ -40,8 +41,9 @@ _main:
     
     lea eax, [string]
     lea ecx, [reverse]
+    lea edi, [string2]
     mov esi, 0
-    mov edi, 1 
+    mov ebp, 1 
     mov ebx, 0
     mov edx, -1
     
@@ -54,30 +56,54 @@ _main:
         cmp byte [eax], 0
         je INVALIDTERM
         cmp byte [eax], 0x2E
-        je REMAIN
+        je REMAINPRINT
         cmp byte [eax], 0x20
         je WORDCOUNT
         inc esi
         cmp esi, 21
         jge MAXINPUT
+       ; mov cl, [eax]
+       ; mov [edi], cl
         inc eax
         inc ebx
+       ; inc edi
         jmp LOOP1
     
     WORDCOUNT:
-        inc edi
+        inc ebp ;edi
         inc esi
         inc eax
         inc ebx
         jmp LOOP1
         
-    REMAIN:
+        
+    REMAINPRINT:
         ;printf ("Palindrome: same string \n")
-        push string 
+       ;push string2
+       ;push prompt2
+       ;call _printf
+       ;add esp, 8
+       ;jmp WORDPRINT
+       
+        mov al, [eax - 1 ]
+        cmp al, 0x21
+        jmp REMAIN
+        mov cl, [eax]
+        mov [edi], cl
+        inc eax
+        inc edi
+        ;jnz REMAINPRINT
+        jmp REMAINPRINT
+        
+        
+    REMAIN:
+        ;printf ("Palindrome %s \n")
+        push string2 
         push prompt2
         call _printf
         add esp, 8
         jmp WORDPRINT
+         
         
     LOOP2:
         cmp ebx, 0
@@ -97,21 +123,22 @@ _main:
         push msg1
         call _printf
         add esp, 4
-        jmp END
+        jmp TRY
         
     INVALIDTERM:
         ;invalid terminator
         push msg2
         call _printf
         add esp, 4
-        jmp END
+        jmp TRY
+        
         
     MAXINPUT:
         ;string greater than 20
         push msg3
         call _printf
         add esp, 4
-        jmp END
+        jmp TRY
         
     LOOP5:
         ;printf ("Palindrome %s \n")
@@ -134,7 +161,7 @@ _main:
     
     WORDPRINT:
         ;push wordcount
-        push edi
+        push ebp ;edi 
         push prompt3
         call _printf
         add esp, 8
