@@ -16,6 +16,7 @@ prompt6 db "gumagana sis", 13,10,0
 
 clr db "cls", 0
 string times 21 db 0
+string2 times 21 db 0
 reverse times 21 db 0
 answer db 0
 
@@ -40,6 +41,7 @@ _main:
     
     lea eax, [string]
     lea ecx, [reverse]
+    lea ebp, [string2]
     mov esi, 0
     mov edi, 1 
     mov ebx, 0
@@ -49,19 +51,22 @@ _main:
     je INVALID
     
     LOOP1:
-        cmp byte [eax], 0x21
+        cmp byte [eax], 0x21 ; exclamation point
         je LOOP2
-        cmp byte [eax], 0
+        cmp byte [eax], 0 ; null
         je INVALIDTERM
-        cmp byte [eax], 0x2E
+        cmp byte [eax], 0x2E ; period
         je REMAIN
-        cmp byte [eax], 0x20
+        cmp byte [eax], 0x20 ; space
         je WORDCOUNT
-        inc esi
+        inc esi ;character
         cmp esi, 21
         jge MAXINPUT
+        mov dx, [eax]
+        mov [ebp], dx
         inc eax
         inc ebx
+        inc ebp
         jmp LOOP1
     
     WORDCOUNT:
