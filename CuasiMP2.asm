@@ -1,13 +1,13 @@
 ; Beaverly Cuasi S15
 global _main
-extern _printf, _scanf, _getchar, _gets, _system
+extern _printf, _scanf, _gets, _system
 
 section .data
 msg1 db "Invalid Input", 13,10,0
 msg2 db "Invalid Terminator, please try again", 13,10, 0
 msg3 db "Max input", 13,10,0
 
-prompt1 db "Enter a string: ", 0
+prompt1 db "Enter string: ", 0
 prompt2 db "Palindrome: %s", 13,10,0
 prompt3 db "Word: %d", 13,10,0
 prompt4 db "Character: %d", 13,10,0
@@ -29,10 +29,9 @@ _main:
     call _system
     add esp, 4
     
-    sub eax, eax
-    sub ecx, ecx
-    sub ebp, ebp
-    
+    mov dword [string], 0
+    mov dword [period], 0
+    mov dword [reverse], 0
     
 
 ;printf ("Enter a string: \n")
@@ -78,6 +77,7 @@ _main:
         jmp LOOP1
     
     WORDCOUNT:
+        ;jump here when there is a space
         inc edi
         inc esi
         inc eax
@@ -86,7 +86,7 @@ _main:
         jmp LOOP1
         
     REMAIN:
-        ;printf ("Palindrome: same string \n")
+        ;print same string without terminator
         inc esi
         push period 
         push prompt2
@@ -108,7 +108,7 @@ _main:
         jmp LOOP5
         
     INVALID:
-        ;invalid
+        ;invalid null
         push msg1
         call _printf
         add esp, 4
@@ -129,7 +129,7 @@ _main:
         jmp TRY
         
     LOOP5:
-        ;printf ("Palindrome %s \n")
+        ;print palindrome 
         push reverse 
         push prompt2
         call _printf
@@ -148,14 +148,14 @@ _main:
         mov dword [reverse + edx], 0
     
     WORDPRINT:
-        ;push wordcount
+        ;print wordcount
         push edi
         push prompt3
         call _printf
         add esp, 8
     
     CHRTR:
-        ;character count
+        ;print character count
         push esi
         push prompt4
         call _printf
@@ -163,7 +163,6 @@ _main:
     
     TRY:
        ;ask to try again
-       ;printf ("Do you want to try again (y/n)?\n")
        push prompt5
        call _printf
        add esp, 4
