@@ -29,12 +29,41 @@ _main:
     call _system
     add esp, 4
     
-    mov dword [string], 0
-    mov dword [period], 0
-    mov dword [reverse], 0
+   ; mov dword [string], 0
+   ; mov dword [period], 0
+   ; mov dword [reverse], 0
     
+    reset_pal:
+    lea esi, [string]
+    lea edi, [reverse]
+    mov cl, 0
+    mov al, 0
+    jmp reset_pal2
+    
+    reset_pal2:
+    cmp cl, 21
+    je reset_per
+    mov [esi], al
+    mov [edi], al
+    inc esi
+    inc edi
+    inc cl
+    jmp reset_pal2
+    
+    reset_per:
+    lea esi, [period]
+    jmp reset_per2
+    
+    reset_per2:
+    cmp cl, 0
+    je here
+    mov [esi], al
+    inc esi
+    dec cl
+    jmp reset_per2
 
 ;printf ("Enter a string: \n")
+here:
     push prompt1
     call _printf
     add esp, 4
